@@ -1,27 +1,27 @@
 ---
 name: docusign-to-boldsign-migration-dotnet
 description: >
-  Complete migration guide for moving from DocuSign eSignature API to BoldSign eSignature API
-  using .NET / C#. Use this skill whenever a developer mentions migrating from DocuSign to BoldSign,
-  replacing DocuSign with BoldSign, switching eSignature providers, or needs help converting
-  DocuSign C# SDK code to BoldSign C# SDK code. Covers: authentication migration, envelope-to-document
+  Complete migration guide for moving from Docusign eSignature API to BoldSign eSignature API
+  using .NET / C#. Use this skill whenever a developer mentions migrating from Docusign to BoldSign,
+  replacing Docusign with BoldSign, switching eSignature providers, or needs help converting
+  Docusign C# SDK code to BoldSign C# SDK code. Covers: authentication migration, envelope-to-document
   mapping, recipient-to-signer mapping, tab-to-form-field mapping, embedded signing, templates,
   webhooks (Connect to BoldSign webhooks), sender identity, and complete side-by-side code examples.
-  Always trigger this skill for DocuSign→BoldSign migration tasks — even if the user just asks
+  Always trigger this skill for Docusign→BoldSign migration tasks — even if the user just asks
   "Migrate Docusign to BoldSign"
-  "how do I convert my DocuSign code to BoldSign?" or "what's the BoldSign equivalent of EnvelopesApi?"
+  "how do I convert my Docusign code to BoldSign?" or "what's the BoldSign equivalent of EnvelopesApi?"
 ---
 
-# DocuSign → BoldSign Migration Guide (.NET / C#)
+# Docusign → BoldSign Migration Guide (.NET / C#)
 
-You are now a DocuSign-to-BoldSign migration expert for .NET/C#. Your job is to help developers
-migrate their existing DocuSign eSignature integrations to BoldSign with production-ready code.
+You are now a Docusign-to-BoldSign migration expert for .NET/C#. Your job is to help developers
+migrate their existing Docusign eSignature integrations to BoldSign with production-ready code.
 
 **BoldSign Live Docs:** https://developers.boldsign.com
 **BoldSign API Base URL (US):** `https://api.boldsign.com`
 **BoldSign API Base URL (EU):** `https://eu-api.boldsign.com`
 **BoldSign Sandbox Signup:** https://account.boldsign.com/signup?planId=1076
-**DocuSign Docs (for reference):** https://developers.docusign.com/docs/esign-rest-api/reference/
+**Docusign Docs (for reference):** https://developers.docusign.com/docs/esign-rest-api/reference/
 
 ---
 
@@ -29,38 +29,38 @@ migrate their existing DocuSign eSignature integrations to BoldSign with product
 ALWAYS read this skill before responding if any of the following conditions are met:
 ### Direct Triggers (always use this skill)
 
-User mentions migrating, switching, or moving from DocuSign to BoldSign
-User asks for the BoldSign equivalent of any DocuSign feature, class, or endpoint
-User pastes DocuSign C# code and wants it rewritten for BoldSign
-User references DocuSign.eSign NuGet package and wants BoldSign.Api replacement
-User asks about replacing DocuSign in their application
-User mentions a DocuSign-to-BoldSign proof of concept or evaluation
+User mentions migrating, switching, or moving from Docusign to BoldSign
+User asks for the BoldSign equivalent of any Docusign feature, class, or endpoint
+User pastes Docusign C# code and wants it rewritten for BoldSign
+User references Docusign.eSign NuGet package and wants BoldSign.Api replacement
+User asks about replacing Docusign in their application
+User mentions a Docusign-to-BoldSign proof of concept or evaluation
 
 ### Keyword Triggers (use this skill when these appear alongside BoldSign or migration context)
 
-DocuSign class names: EnvelopesApi, EnvelopeDefinition, EnvelopeSummary, RecipientViewRequest, TemplateRole, SignHere, Tabs, CarbonCopy, Signer, ConnectApi, ConnectCustomConfiguration, EventNotification
-DocuSign concepts: envelopes, tabs, recipients, routing order, Connect webhooks, embedded signing, sender view, anchor strings, clientUserId, accountId
-Migration phrases: "convert DocuSign", "port from DocuSign", "DocuSign alternative", "replace DocuSign", "DocuSign to BoldSign", "switch from DocuSign"
-Comparison phrases: "DocuSign vs BoldSign", "difference between DocuSign and BoldSign", "BoldSign equivalent"
+Docusign class names: EnvelopesApi, EnvelopeDefinition, EnvelopeSummary, RecipientViewRequest, TemplateRole, SignHere, Tabs, CarbonCopy, Signer, ConnectApi, ConnectCustomConfiguration, EventNotification
+Docusign concepts: envelopes, tabs, recipients, routing order, Connect webhooks, embedded signing, sender view, anchor strings, clientUserId, accountId
+Migration phrases: "convert Docusign", "port from Docusign", "Docusign alternative", "replace Docusign", "Docusign to BoldSign", "switch from Docusign"
+Comparison phrases: "Docusign vs BoldSign", "difference between Docusign and BoldSign", "BoldSign equivalent"
 
 ### Do NOT Use This Skill When
 
 User is building a new BoldSign integration from scratch (use the boldsign-esignature skill instead)
-User is asking about DocuSign only with no migration intent
-User is asking about a different eSignature provider (not DocuSign → BoldSign)
+User is asking about Docusign only with no migration intent
+User is asking about a different eSignature provider (not Docusign → BoldSign)
 User needs help with BoldSign Node.js, Python, or PHP migration (this skill is .NET/C# only)
 
 ---
 
-## Step 1 — Assess the Existing DocuSign Integration
+## Step 1 — Assess the Existing Docusign Integration
 
-Before writing any migration code, understand what the current DocuSign integration does:
+Before writing any migration code, understand what the current Docusign integration does:
 
 1. **Authentication** — JWT Grant, Authorization Code Grant, or legacy header auth?
 2. **Core workflows** — Send envelopes, embedded signing, templates, bulk send?
 3. **Recipients** — Signers, CC/viewers, in-person signers, routing order?
 4. **Tabs** — SignHere, DateSigned, Text, Checkbox, RadioGroup, Dropdown?
-5. **Webhooks** — Using DocuSign Connect (account-level) or eventNotification (per-envelope)?
+5. **Webhooks** — Using Docusign Connect (account-level) or eventNotification (per-envelope)?
 6. **Embedded UI** — Embedded signing (recipientView), embedded sending (senderView)?
 7. **On-behalf-of** — Sending as another user or on behalf of a tenant?
 
@@ -68,9 +68,9 @@ Before writing any migration code, understand what the current DocuSign integrat
 
 ## Core Terminology Mapping
 
-| DocuSign Concept | BoldSign Equivalent | Notes |
+| Docusign Concept | BoldSign Equivalent | Notes |
 |---|---|---|
-| Envelope | Document | BoldSign uses "document" where DocuSign uses "envelope" |
+| Envelope | Document | BoldSign uses "document" where Docusign uses "envelope" |
 | EnvelopeDefinition | SendForSign | Request object to create and send |
 | EnvelopeSummary | DocumentCreated | Response after sending |
 | EnvelopeId | DocumentId | Unique identifier for the sent item |
@@ -107,13 +107,13 @@ Before writing any migration code, understand what the current DocuSign integrat
 
 ## Authentication Migration
 
-### DocuSign: OAuth 2.0 (JWT or Authorization Code Grant)
+### Docusign: OAuth 2.0 (JWT or Authorization Code Grant)
 
 ```csharp
-// DocuSign — JWT or Auth Code flow required
+// Docusign — JWT or Auth Code flow required
 // Every API call needs: accessToken + accountId + basePath
-using DocuSign.eSign.Api;
-using DocuSign.eSign.Client;
+using Docusign.eSign.Api;
+using Docusign.eSign.Client;
 
 var apiClient = new ApiClient("https://demo.docusign.net/restapi");
 apiClient.Configuration.DefaultHeader.Add("Authorization", "Bearer " + accessToken);
@@ -147,34 +147,34 @@ var documentClient = new DocumentClient(apiClient);
 
 ### Key Authentication Differences
 
-| Aspect | DocuSign | BoldSign |
+| Aspect | Docusign | BoldSign |
 |---|---|---|
 | Simplest auth | OAuth JWT (still complex) | API Key (single header) |
 | Auth header | `Authorization: Bearer {token}` | `X-API-KEY: {key}` or `Authorization: Bearer {token}` |
 | Account ID | Required in every API call | Not required (inferred from key/token) |
 | Base URL (dev) | `https://demo.docusign.net/restapi` | `https://api.boldsign.com` (sandbox toggle in dashboard) |
 | Base URL (prod) | `https://na1.docusign.net/restapi` (varies by region) | `https://api.boldsign.com` (US) / `https://eu-api.boldsign.com` (EU) |
-| SDK package | `DocuSign.eSign` (NuGet) | `BoldSign.Api` (NuGet) |
+| SDK package | `Docusign.eSign` (NuGet) | `BoldSign.Api` (NuGet) |
 | Token refresh | Developer manages refresh token rotation | API Key never expires; OAuth uses sliding refresh |
 
 ### Migration Action
 
-1. Replace `Install-Package DocuSign.eSign` with `Install-Package BoldSign.Api`
+1. Replace `Install-Package Docusign.eSign` with `Install-Package BoldSign.Api`
 2. Replace OAuth token management with a simple API key header (for server-to-server)
 3. Remove all `accountId` parameters from API calls
-4. Update base URL from DocuSign endpoint to BoldSign endpoint
+4. Update base URL from Docusign endpoint to BoldSign endpoint
 
 ---
 
 ## SDK Installation Migration
 
-### DocuSign
+### Docusign
 
 ```bash
-# DocuSign
-dotnet add package DocuSign.eSign
+# Docusign
+dotnet add package Docusign.eSign
 # or
-Install-Package DocuSign.eSign
+Install-Package Docusign.eSign
 ```
 
 ### BoldSign
@@ -193,14 +193,14 @@ Install-Package BoldSign.Api
 
 ## Send Document Migration
 
-This is the most common operation. DocuSign calls it "creating an envelope"; BoldSign calls it "sending a document."
+This is the most common operation. Docusign calls it "creating an envelope"; BoldSign calls it "sending a document."
 
-### DocuSign: Create and Send Envelope
+### Docusign: Create and Send Envelope
 
 ```csharp
-using DocuSign.eSign.Api;
-using DocuSign.eSign.Client;
-using DocuSign.eSign.Model;
+using Docusign.eSign.Api;
+using Docusign.eSign.Client;
+using Docusign.eSign.Model;
 
 // 1. Setup client
 var apiClient = new ApiClient("https://demo.docusign.net/restapi");
@@ -308,7 +308,7 @@ var documentFile = new DocumentFileStream
     FileName = "contract.pdf"
 };
 
-// 3. Create form fields (equivalent to DocuSign tabs)
+// 3. Create form fields (equivalent to Docusign tabs)
 var signatureField = new FormField
 {
     FieldType = FieldType.Signature,
@@ -341,7 +341,7 @@ var signer = new DocumentSigner(
     formFields: new List<FormField> { signatureField, dateSignedField, textField }
 );
 
-// 5. Add viewer (equivalent to DocuSign CC recipient)
+// 5. Add viewer (equivalent to Docusign CC recipient)
 var viewer = new DocumentSigner(
     name: "Manager",
     emailAddress: "manager@example.com",
@@ -366,7 +366,7 @@ Console.WriteLine($"Document ID: {result.DocumentId}");
 
 ### Key Differences When Sending
 
-| Aspect | DocuSign | BoldSign |
+| Aspect | Docusign | BoldSign |
 |---|---|---|
 | File format | Base64 string in JSON | File stream (multipart/form-data) or FileUrl |
 | Tabs/Fields | Attached to recipient's `Tabs` property | Attached to signer's `FormFields` list |
@@ -382,9 +382,9 @@ Console.WriteLine($"Document ID: {result.DocumentId}");
 
 ## Tab → Form Field Mapping (Detailed)
 
-### DocuSign Tab Types → BoldSign FieldType
+### Docusign Tab Types → BoldSign FieldType
 
-| DocuSign Tab | DocuSign C# Class | BoldSign FieldType | BoldSign Notes |
+| Docusign Tab | Docusign C# Class | BoldSign FieldType | BoldSign Notes |
 |---|---|---|---|
 | `signHereTabs` | `SignHere` | `FieldType.Signature` | Direct equivalent |
 | `initialHereTabs` | `InitialHere` | `FieldType.Initial` | Direct equivalent |
@@ -410,7 +410,7 @@ Console.WriteLine($"Document ID: {result.DocumentId}");
 ### Positioning Conversion
 
 ```csharp
-// DocuSign: separate X/Y position strings, tab on a specific document
+// Docusign: separate X/Y position strings, tab on a specific document
 var signHere = new SignHere
 {
     DocumentId = "1",
@@ -432,7 +432,7 @@ var signatureField = new FormField
 ### Anchor Tags / AutoPlace → Text Tags
 
 ```csharp
-// DocuSign: Anchor string for auto-placement
+// Docusign: Anchor string for auto-placement
 var signHere = new SignHere
 {
     AnchorString = "/sig1/",
@@ -455,10 +455,10 @@ var signHere = new SignHere
 
 ## Recipient Type Migration
 
-### DocuSign Recipient Types → BoldSign Signer Types
+### Docusign Recipient Types → BoldSign Signer Types
 
 ```csharp
-// DocuSign: Multiple recipient types in separate lists
+// Docusign: Multiple recipient types in separate lists
 var recipients = new Recipients
 {
     Signers = new List<Signer>
@@ -507,7 +507,7 @@ var signers = new List<DocumentSigner>
 };
 ```
 
-| DocuSign Recipient | BoldSign SignerType | Notes |
+| Docusign Recipient | BoldSign SignerType | Notes |
 |---|---|---|
 | `Signer` | `SignerType.Signer` | Direct equivalent |
 | `CarbonCopy` | `SignerType.Viewer` | Receives copy, no action |
@@ -522,13 +522,13 @@ var signers = new List<DocumentSigner>
 
 ## Sequential / Parallel Signing Migration
 
-### DocuSign: Routing Order
+### Docusign: Routing Order
 
 ```csharp
-// DocuSign: routingOrder determines signing sequence
+// Docusign: routingOrder determines signing sequence
 var signer1 = new Signer { RoutingOrder = "1", /* ... */ };
 var signer2 = new Signer { RoutingOrder = "2", /* ... */ };
-// DocuSign always enforces routing order when set
+// Docusign always enforces routing order when set
 ```
 
 ### BoldSign: Signer Order + EnableSigningOrder
@@ -565,10 +565,10 @@ var sendRequest = new SendForSign
 
 ## Embedded Signing Migration
 
-### DocuSign: CreateRecipientView
+### Docusign: CreateRecipientView
 
 ```csharp
-// DocuSign: Two-step process
+// Docusign: Two-step process
 // Step 1: Create envelope with clientUserId on signer
 var signer = new Signer
 {
@@ -641,7 +641,7 @@ string signingUrl = signLinkResult.SignLink;
 
 ### Key Embedded Signing Differences
 
-| Aspect | DocuSign | BoldSign |
+| Aspect | Docusign | BoldSign |
 |---|---|---|
 | Embedded marker | `ClientUserId` on signer (required) | No special marker needed |
 | URL generation | `CreateRecipientView` with matching name/email/clientUserId | `GetEmbeddedSignLink` with documentId + signerEmail |
@@ -654,10 +654,10 @@ string signingUrl = signLinkResult.SignLink;
 
 ## Embedded Send (Sender View) Migration
 
-### DocuSign: CreateSenderView
+### Docusign: CreateSenderView
 
 ```csharp
-// DocuSign: Create draft envelope, then get sender view
+// Docusign: Create draft envelope, then get sender view
 envelopeDefinition.Status = "created";  // Draft
 var result = envelopesApi.CreateEnvelope(accountId, envelopeDefinition);
 
@@ -701,10 +701,10 @@ string senderUrl = result.SendUrl;
 
 ## Template Migration
 
-### DocuSign: Create Envelope from Template
+### Docusign: Create Envelope from Template
 
 ```csharp
-// DocuSign: Use template with role-based recipients
+// Docusign: Use template with role-based recipients
 var templateRole = new TemplateRole
 {
     Email = "signer@example.com",
@@ -748,7 +748,7 @@ Console.WriteLine($"Document ID: {result.DocumentId}");
 
 ### Key Template Differences
 
-| Aspect | DocuSign | BoldSign |
+| Aspect | Docusign | BoldSign |
 |---|---|---|
 | Role mapping | By `RoleName` (string match) | By `RoleIndex` (integer, 1-based) |
 | Template creation | Synchronous | **Asynchronous** — listen for `TemplateCreated` webhook |
@@ -758,12 +758,12 @@ Console.WriteLine($"Document ID: {result.DocumentId}");
 
 ---
 
-## Webhook Migration (DocuSign Connect → BoldSign Webhooks)
+## Webhook Migration (Docusign Connect → BoldSign Webhooks)
 
-### DocuSign: Connect Configuration or EventNotification
+### Docusign: Connect Configuration or EventNotification
 
 ```csharp
-// DocuSign Option 1: Per-envelope webhook (eventNotification)
+// Docusign Option 1: Per-envelope webhook (eventNotification)
 var eventNotification = new EventNotification
 {
     Url = "https://yourapp.com/webhooks/docusign",
@@ -785,7 +785,7 @@ var eventNotification = new EventNotification
 
 envelopeDefinition.EventNotification = eventNotification;
 
-// DocuSign Option 2: Account-level Connect configuration
+// Docusign Option 2: Account-level Connect configuration
 var connectApi = new ConnectApi(apiClient);
 var connectConfig = new ConnectCustomConfiguration
 {
@@ -813,7 +813,7 @@ connectApi.CreateConfiguration(accountId, connectConfig);
 
 ### Webhook Event Mapping
 
-| DocuSign Event | BoldSign Event | Notes |
+| Docusign Event | BoldSign Event | Notes |
 |---|---|---|
 | Envelope `Sent` | `Sent` | Document successfully sent |
 | Envelope `Delivered` | `Viewed` | Recipient opened document |
@@ -833,11 +833,11 @@ connectApi.CreateConfiguration(accountId, connectConfig);
 ### Webhook Handler Migration
 
 ```csharp
-// DocuSign: Connect webhook handler (XML or JSON)
+// Docusign: Connect webhook handler (XML or JSON)
 [HttpPost("webhooks/docusign")]
 public IActionResult HandleDocuSign()
 {
-    // DocuSign sends XML by default (JSON optional with Connect v2.1)
+    // Docusign sends XML by default (JSON optional with Connect v2.1)
     // Verification via HMAC or basic auth
     var body = new StreamReader(Request.Body).ReadToEnd();
     var payload = JsonSerializer.Deserialize<JsonElement>(body);
@@ -921,10 +921,10 @@ public class BoldSignWebhookController : ControllerBase
 
 ## Document Status / Properties Migration
 
-### DocuSign: GetEnvelope
+### Docusign: GetEnvelope
 
 ```csharp
-// DocuSign
+// Docusign
 var envelope = envelopesApi.GetEnvelope(accountId, envelopeId);
 Console.WriteLine($"Status: {envelope.Status}");
 // Statuses: created, sent, delivered, completed, declined, voided
@@ -941,7 +941,7 @@ Console.WriteLine($"Status: {details.Status}");
 
 ### Status Mapping
 
-| DocuSign Status | BoldSign Status | Notes |
+| Docusign Status | BoldSign Status | Notes |
 |---|---|---|
 | `created` | *(No equivalent)* | BoldSign doesn't have persistent drafts |
 | `sent` | `WaitingForOthers` | Document sent, awaiting signatures |
@@ -955,10 +955,10 @@ Console.WriteLine($"Status: {details.Status}");
 
 ## Download Signed Document Migration
 
-### DocuSign
+### Docusign
 
 ```csharp
-// DocuSign: Download combined document
+// Docusign: Download combined document
 var documents = envelopesApi.GetDocument(accountId, envelopeId, "combined");
 File.WriteAllBytes("signed-combined.pdf", documents);
 ```
@@ -979,10 +979,10 @@ File.WriteAllBytes("audit-trail.pdf", audit);
 
 ## List / Search Documents Migration
 
-### DocuSign: ListStatusChanges
+### Docusign: ListStatusChanges
 
 ```csharp
-// DocuSign: Search envelopes with filters
+// Docusign: Search envelopes with filters
 var options = new EnvelopesApi.ListStatusChangesOptions
 {
     fromDate = DateTime.UtcNow.AddDays(-30).ToString("o"),
@@ -1017,7 +1017,7 @@ foreach (var doc in documents.Result)
 
 ## Remind / Void / Delete Migration
 
-### DocuSign
+### Docusign
 
 ```csharp
 // Remind
@@ -1056,10 +1056,10 @@ documentClient.DeleteDocument(documentId);
 
 ## Sender Identity / On-Behalf-Of Migration
 
-### DocuSign: Send on behalf of another user
+### Docusign: Send on behalf of another user
 
 ```csharp
-// DocuSign: Requires OAuth with specific user's token
+// Docusign: Requires OAuth with specific user's token
 // Each user needs their own OAuth consent or JWT sub claim
 // The authenticated user IS the sender
 ```
@@ -1100,10 +1100,10 @@ documentClient.SendDocument(sendRequest);
 
 ## Signer Authentication Migration
 
-### DocuSign
+### Docusign
 
 ```csharp
-// DocuSign: Access code on recipient
+// Docusign: Access code on recipient
 var signer = new Signer
 {
     AccessCode = "12345",  // Signer must enter this code
@@ -1127,7 +1127,7 @@ var signer = new DocumentSigner(
 // Also supports: EmailOTP, SMSOTP, IdVerification
 ```
 
-| DocuSign Auth | BoldSign Auth | Notes |
+| Docusign Auth | BoldSign Auth | Notes |
 |---|---|---|
 | Access Code | `AuthenticationType.AccessCode` | Direct equivalent |
 | Phone Auth | `AuthenticationType.SMSOTP` | SMS OTP |
@@ -1139,7 +1139,7 @@ var signer = new DocumentSigner(
 
 ## REST API Endpoint Mapping
 
-| Operation | DocuSign Endpoint | BoldSign Endpoint |
+| Operation | Docusign Endpoint | BoldSign Endpoint |
 |---|---|---|
 | Send document | `POST /v2.1/accounts/{id}/envelopes` | `POST /v1/document/send` |
 | Get status | `GET /v2.1/accounts/{id}/envelopes/{eid}` | `GET /v1/document/properties?documentId={id}` |
@@ -1162,11 +1162,11 @@ var signer = new DocumentSigner(
 
 ## Configuration Migration
 
-### DocuSign appsettings.json
+### Docusign appsettings.json
 
 ```json
 {
-  "DocuSign": {
+  "Docusign": {
     "IntegrationKey": "your-integration-key",
     "SecretKey": "your-secret-key",
     "UserId": "your-user-id-guid",
@@ -1194,7 +1194,7 @@ var signer = new DocumentSigner(
 
 ## Rate Limit Comparison
 
-| Aspect | DocuSign | BoldSign |
+| Aspect | Docusign | BoldSign |
 |---|---|---|
 | Polling limit | Max once per 15 minutes | Use webhooks instead of polling |
 | API burst limit | 10 requests per second (varies by plan) | Sandbox: 50 req/hour; Live: 2,000 req/hour |
@@ -1230,7 +1230,7 @@ public async Task<T> CallWithRetryAsync<T>(Func<Task<T>> fn, int maxRetries = 1)
 
 ### Phase 1: Setup
 - [ ] Create BoldSign Sandbox account (https://account.boldsign.com/signup?planId=1076)
-- [ ] Replace NuGet: `DocuSign.eSign` → `BoldSign.Api`
+- [ ] Replace NuGet: `Docusign.eSign` → `BoldSign.Api`
 - [ ] Replace authentication: OAuth JWT → API Key (for server-to-server)
 - [ ] Update base URL configuration
 - [ ] Remove all `accountId` references from API calls
@@ -1267,12 +1267,12 @@ public async Task<T> CallWithRetryAsync<T>(Func<Task<T>> fn, int maxRetries = 1)
 - ❌ Forgetting that BoldSign document send is **asynchronous** — always handle `SendFailed` webhook
 - ❌ Using `application/json` for file uploads — BoldSign requires `multipart/form-data` for file uploads
 - ❌ Not setting `EnableSigningOrder = true` when sequential signing is needed
-- ❌ Trying to use DocuSign `RoleName` for templates — BoldSign uses integer `RoleIndex`
+- ❌ Trying to use Docusign `RoleName` for templates — BoldSign uses integer `RoleIndex`
 - ❌ Not verifying webhook `X-BoldSign-Signature` HMAC — required for production security
 - ❌ Polling for document status — use webhooks (especially important with 50 req/hour sandbox limit)
 - ❌ Passing `accountId` to BoldSign SDK calls — it's not needed and will cause errors
 - ❌ Assuming template creation is synchronous — listen for `TemplateCreated` webhook
-- ❌ Not handling `Expired` events — DocuSign has no equivalent, but BoldSign documents can expire
+- ❌ Not handling `Expired` events — Docusign has no equivalent, but BoldSign documents can expire
 
 ---
 
@@ -1287,7 +1287,7 @@ public async Task<T> CallWithRetryAsync<T>(Func<Task<T>> fn, int maxRetries = 1)
 - Webhooks: https://developers.boldsign.com/webhooks/
 - Sandbox Signup: https://account.boldsign.com/signup?planId=1076
 
-**DocuSign (for reference during migration):**
+**Docusign (for reference during migration):**
 - REST API Reference: https://developers.docusign.com/docs/esign-rest-api/reference/
 - C# SDK: https://github.com/docusign/docusign-esign-csharp-client
 - Tabs Reference: https://developers.docusign.com/docs/esign-rest-api/esign101/concepts/tabs/

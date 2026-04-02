@@ -1,8 +1,8 @@
-# DocuSign to BoldSign API Migration Skill
+# Docusign to BoldSign API Migration Skill
 
-A migration skill for converting existing DocuSign eSignature integrations to BoldSign eSignature using .NET / C#.
+A migration skill for converting existing Docusign eSignature integrations to BoldSign eSignature using .NET / C#.
 
-This repository packages the `BoldSign/` skill folder with the root `SKILL.md` entrypoint, which defines production‑ready rules and mappings for migrating DocuSign SDK usage to BoldSign SDK usage.
+This repository packages the `BoldSign/` skill folder with the root `SKILL.md` entrypoint, which defines production‑ready rules and mappings for migrating Docusign SDK usage to BoldSign SDK usage.
 
 ---
 
@@ -23,7 +23,7 @@ docusign-to-boldsign-api-migration/
 
 Based on the migration guidance defined in `SKILL.md`, this skill helps with:
 
-- Authentication migration from DocuSign to BoldSign
+- Authentication migration from Docusign to BoldSign
 - Envelope to Document mapping
 - Recipient and routing order migration
 - Tab to FormField mapping
@@ -34,9 +34,9 @@ Based on the migration guidance defined in `SKILL.md`, this skill helps with:
 - Downloading signed documents and audit logs
 - Listing and searching documents
 - Reminder, revoke, and delete operations
-- Webhook migration from DocuSign Connect to BoldSign Webhooks
+- Webhook migration from Docusign Connect to BoldSign Webhooks
 
-The skill focuses exclusively on migration by replacing DocuSign SDK constructs with equivalent BoldSign SDK constructs while preserving existing application logic and workflows.
+The skill focuses exclusively on migration by replacing Docusign SDK constructs with equivalent BoldSign SDK constructs while preserving existing application logic and workflows.
 
 ---
 
@@ -44,16 +44,16 @@ The skill focuses exclusively on migration by replacing DocuSign SDK constructs 
 
 1. Download or clone this repository.
 2. Copy the `BoldSign/` folder into your current Code Studio or AI agent skills workspace.
-3. Provide existing DocuSign .NET source code and prompt the agent to perform migration.
+3. Provide existing Docusign .NET source code and prompt the agent to perform migration.
 
 ---
 
 ## Example prompts
 
-- `Migrate DocuSign .NET SDK usage to BoldSign .NET SDK usage and generate an equivalent BoldSign source file.`
-- `Convert DocuSign embedded signing workflow to BoldSign embedded signing.`
-- `Translate DocuSign template-based envelope flow to BoldSign templates.`
-- `Replace DocuSign SDK usage with BoldSign SDK equivalents in this C# implementation.`
+- `Migrate Docusign .NET SDK usage to BoldSign .NET SDK usage and generate an equivalent BoldSign source file.`
+- `Convert Docusign embedded signing workflow to BoldSign embedded signing.`
+- `Translate Docusign template-based envelope flow to BoldSign templates.`
+- `Replace Docusign SDK usage with BoldSign SDK equivalents in this C# implementation.`
 
 ---
 
@@ -65,7 +65,7 @@ The skill focuses exclusively on migration by replacing DocuSign SDK constructs 
 
 ## Notes
 
-- This skill is intended for migration scenarios where DocuSign code already exists.
+- This skill is intended for migration scenarios where Docusign code already exists.
 - Generated BoldSign code should be reviewed, integrated, and tested end-to-end.
 - Webhook-based status handling is preferred over polling after migration.
 
