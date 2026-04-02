@@ -46,14 +46,6 @@ The skill focuses exclusively on migration by replacing DocuSign SDK constructs 
 2. Copy the `BoldSign/` folder into your current Code Studio or AI agent skills workspace.
 3. Provide existing DocuSign .NET source code and prompt the agent to perform migration.
 
-Example install path used in documentation:
-
-```bash
-cp -R BoldSign /mnt/skills/user/docusign-to-boldsign-api-migration/
-```
-
-Adjust the target path if your AI agent environment uses a different skills directory.
-
 ---
 
 ## Example prompts
