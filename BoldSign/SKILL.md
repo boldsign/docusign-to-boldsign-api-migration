@@ -440,11 +440,12 @@ var signHere = new SignHere
 };
 
 // BoldSign: Text Tags (embed in document before upload)
+// Syntax: {{*Field type*|*Signer Index*|*Required*|*Field label*|*Field ID*}}
 // In your Word/PDF document, add invisible text:
-//   {{:sign:signer1}}       → Signature field
-//   {{:initial:signer1}}    → Initials field
-//   {{:date:signer1}}       → Date signed
-//   {{:textbox:signer1}}    → Text input
+//   {{sign|signer_index}}       → Signature field
+//   {{init|signer_index}}    → Initials field
+//   {{date|signer_index}}       → Date signed
+//   {{text|signer_index}}    → Text input
 // BoldSign auto-converts these to real fields on upload.
 // Reference: https://developers.boldsign.com/documents/text-tags/
 ```
