@@ -503,7 +503,7 @@ var signers = new List<DocumentSigner>
 | Docusign Recipient | BoldSign SignerType | Notes |
 |---|---|---|
 | `Signer` | `SignerType.Signer` | Direct equivalent |
-| `CarbonCopy` | `Separate `DocumentCC` recipient | Receives copy, no action |
+| `CarbonCopy` | Separate `DocumentCC` recipient | Receives copy, no action |
 | `InPersonSigner` | `SignerType.InPersonSigner` | Direct equivalent |
 | `CertifiedDelivery` | Separate `DocumentCC` recipient | Use Viewer (closest equivalent) |
 | `Editor` | *(Not supported)* | Not available in BoldSign |
