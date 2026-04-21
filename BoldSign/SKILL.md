@@ -505,7 +505,7 @@ var signers = new List<DocumentSigner>
 | `Signer` | `SignerType.Signer` | Direct equivalent |
 | `CarbonCopy` | Separate `DocumentCC` recipient | Receives copy, no action |
 | `InPersonSigner` | `SignerType.InPersonSigner` | Direct equivalent |
-| `CertifiedDelivery` | Separate `DocumentCC` recipient | Use Viewer (closest equivalent) |
+| `CertifiedDelivery` | `SignerType.Reviewer` | Use Viewer (closest equivalent) |
 | `Editor` | *(Not supported)* | Not available in BoldSign |
 | `Agent` | *(Not supported)* | Not available in BoldSign |
 | `Intermediary` | *(Not supported)* | Not available in BoldSign |
