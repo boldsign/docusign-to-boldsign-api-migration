@@ -77,7 +77,7 @@ Before writing any migration code, understand what the current Docusign integrat
 | EnvelopesApi | DocumentClient | Primary API client class |
 | TemplatesApi | TemplateClient | Template operations |
 | Recipient (Signer) | DocumentSigner (SignerType.Signer) | Person who signs |
-| Recipient (CC) | DocumentSigner (SignerType.Viewer) | Receives copy, no action |
+| Recipient (CC) | DocumentCC | Receives copy, no action |
 | Recipient (InPersonSigner) | DocumentSigner (SignerType.InPersonSigner) | Signs in person |
 | Tab | FormField | Fields placed on documents |
 | SignHere tab | FormField (FieldType.Signature) | Signature placement |
@@ -341,19 +341,17 @@ var signer = new DocumentSigner(
     formFields: new List<FormField> { signatureField, dateSignedField, textField }
 );
 
-// 5. Add viewer (equivalent to Docusign CC recipient)
-var viewer = new DocumentSigner(
-    name: "Manager",
-    emailAddress: "manager@example.com",
-    signerType: SignerType.Viewer
-);
 
-// 6. Build and send
+// 5. Build and send
 var sendRequest = new SendForSign
 {
     Title = "Please sign this document",
     Message = "Please review and sign.",
-    Signers = new List<DocumentSigner> { signer, viewer },
+    Signers = new List<DocumentSigner> { signer },
+    CC = new List<DocumentCC>() // Add CC (equivalent to Docusign CC recipient)
+    {
+        new DocumentCC(emailAddress: "manager@example.com"),
+    },
     Files = new List<IDocumentFile> { documentFile },
     // ExpiryDays = 30,
     // EnableSigningOrder = true  // For sequential signing
@@ -371,7 +369,7 @@ Console.WriteLine($"Document ID: {result.DocumentId}");
 | File format | Base64 string in JSON | File stream (multipart/form-data) or FileUrl |
 | Tabs/Fields | Attached to recipient's `Tabs` property | Attached to signer's `FormFields` list |
 | Tab positioning | `XPosition`/`YPosition` (string) | `Bounds` rectangle (x, y, width, height) |
-| CC recipients | Separate `CarbonCopy` recipient type | `DocumentSigner` with `SignerType.Viewer` |
+| CC recipients | Separate `CarbonCopy` recipient type | Separate `DocumentCC` recipient |
 | Send status | `Status = "sent"` to send immediately | Sends immediately on API call (no draft by default) |
 | Draft mode | `Status = "created"` | Use embedded request for draft-like behavior |
 | Document ID | String in response (`EnvelopeId`) | String in response (`DocumentId`) |
@@ -442,11 +440,12 @@ var signHere = new SignHere
 };
 
 // BoldSign: Text Tags (embed in document before upload)
+// Syntax: {{*Field type*|*Signer Index*|*Required*|*Field label*|*Field ID*}}
 // In your Word/PDF document, add invisible text:
-//   {{:sign:signer1}}       → Signature field
-//   {{:initial:signer1}}    → Initials field
-//   {{:date:signer1}}       → Date signed
-//   {{:textbox:signer1}}    → Text input
+//   {{sign|signer_index}}       → Signature field
+//   {{init|signer_index}}    → Initials field
+//   {{date|signer_index}}       → Date signed
+//   {{text|signer_index}}    → Text input
 // BoldSign auto-converts these to real fields on upload.
 // Reference: https://developers.boldsign.com/documents/text-tags/
 ```
@@ -492,12 +491,6 @@ var signers = new List<DocumentSigner>
         formFields: new List<FormField> { signatureField }
     ),
     new DocumentSigner(
-        name: "CC Person",
-        emailAddress: "cc@example.com",
-        signerType: SignerType.Viewer,  // CC equivalent
-        signerOrder: 2
-    ),
-    new DocumentSigner(
         name: "In-Person Signer",
         emailAddress: "inperson@example.com",
         signerType: SignerType.InPersonSigner,
@@ -510,9 +503,9 @@ var signers = new List<DocumentSigner>
 | Docusign Recipient | BoldSign SignerType | Notes |
 |---|---|---|
 | `Signer` | `SignerType.Signer` | Direct equivalent |
-| `CarbonCopy` | `SignerType.Viewer` | Receives copy, no action |
+| `CarbonCopy` | Separate `DocumentCC` recipient | Receives copy, no action |
 | `InPersonSigner` | `SignerType.InPersonSigner` | Direct equivalent |
-| `CertifiedDelivery` | `SignerType.Viewer` | Use Viewer (closest equivalent) |
+| `CertifiedDelivery` | `SignerType.Reviewer` | Use Viewer (closest equivalent) |
 | `Editor` | *(Not supported)* | Not available in BoldSign |
 | `Agent` | *(Not supported)* | Not available in BoldSign |
 | `Intermediary` | *(Not supported)* | Not available in BoldSign |
@@ -825,7 +818,7 @@ connectApi.CreateConfiguration(accountId, connectConfig);
 | Recipient `Sent` | `Sent` | Document sent to signer |
 | Recipient `Delivered` | `Viewed` | Signer opened document |
 | Recipient `Declined` | `Declined` | Signer declined |
-| Recipient `AuthenticationFailed` | `IdentityVerificationFailed` | Auth failed |
+| Recipient `AuthenticationFailed` | `AuthenticationFailed/IdentityVerificationFailed` | Auth failed |
 | *(No equivalent)* | `Expired` | Document expired |
 | *(No equivalent)* | `TemplateCreated` / `TemplateCreateFailed` | Template async result |
 | *(No equivalent)* | `SenderIdentityApproved` / `Denied` / `Revoked` | On-behalf-of lifecycle |
@@ -934,9 +927,9 @@ Console.WriteLine($"Status: {envelope.Status}");
 
 ```csharp
 // BoldSign
-var details = documentClient.GetDocumentProperties(documentId);
+var details = documentClient.GetProperties(documentId);
 Console.WriteLine($"Status: {details.Status}");
-// Statuses: WaitingForOthers (InProgress), Completed, Declined, Expired, Revoked
+// Statuses: InProgress, Completed, Declined, Expired, Revoked
 ```
 
 ### Status Mapping
@@ -944,8 +937,8 @@ Console.WriteLine($"Status: {details.Status}");
 | Docusign Status | BoldSign Status | Notes |
 |---|---|---|
 | `created` | *(No equivalent)* | BoldSign doesn't have persistent drafts |
-| `sent` | `WaitingForOthers` | Document sent, awaiting signatures |
-| `delivered` | `WaitingForOthers` | Viewed but not yet signed |
+| `sent` | `InProgress` | Document sent, awaiting signatures |
+| `delivered` | `InProgress` | Viewed but not yet signed |
 | `completed` | `Completed` | All signers finished |
 | `declined` | `Declined` | Signer declined |
 | `voided` | `Revoked` | Sender cancelled |
@@ -1035,18 +1028,23 @@ envelopesApi.Update(accountId, envelopeId, new Envelope { PurgeState = "document
 
 ```csharp
 // Remind specific signer
-documentClient.RemindDocument(new ReminderMessage
-{
-    DocumentId = documentId,
-    ReceiverEmails = new List<string> { "signer@example.com" }
-});
+documentClient.RemindDocument(
+    documentId: documentId,
+    receiverEmails: new List<string>
+    {
+        "signer@example.com"
+    },
+    reminderMessage: new ReminderMessage
+    {
+        Message = "Please sign the document"
+    }
+);
 
 // Revoke (void) document
-documentClient.RevokeDocument(new RevokeDocument
-{
-    DocumentId = documentId,
-    Message = "No longer needed"
-});
+documentClient.RevokeDocument(
+    documentId: documentId,
+    revokeMessage: "This document is no longer required"
+);
 
 // Delete document
 documentClient.DeleteDocument(documentId);
